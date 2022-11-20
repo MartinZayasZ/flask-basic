@@ -1,8 +1,16 @@
+from models import Persona
 from flask import Flask, render_template
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
 
 app = Flask(__name__)
+
+
+# Configuración  flask-wtf
+app.config['SECRET_KEY'] = 'LLAVE_SECRETA'
 
 # Configuración de la db
 USER_DB = 'postgres'
@@ -20,20 +28,11 @@ db = SQLAlchemy(app)
 migrate = Migrate()
 migrate.init_app(app, db)
 
-class Persona(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(250))
-    apellido = db.Column(db.String(250))
-    email = db.Column(db.String(250))
-
-    def __str__(self):
-        return (
-            f'Id: {self.id}, '
-            f'Nombre: {self.nombre},'
-            f'Apellido: {self.apellido},'
-            f'Email: {self.email}'
-        )
-
+class PersonaForm(FlaskForm):
+    nombre = StringField('Nombre', validators=[DataRequired()])
+    apellido = StringField('Apellido')
+    email = StringField('Email', validators=[DataRequired()])
+    enviar = SubmitField('Enviar')
 
 @app.route('/')
 @app.route('/index')
@@ -57,6 +56,8 @@ def ver_detalle(id):
 
 @app.route('/agregar', methods=['GET', 'POST'])
 def agregar():
+    persona = Persona()
+
     return render_template('agregar.html')
 
 
