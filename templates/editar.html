@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Persona</title>
+</head>
+<body>
+    <h1>Editar Persona</h1>
+    <form action="" method="POST">
+        {{personaForm.csrf_token}}
+        <p>
+            {{personaForm.nombre.label}}
+            {{personaForm.nombre(size=30)}}
+        </p>
+        <p>
+            {{personaForm.apellido.label}}
+            {{personaForm.apellido(size=30)}}
+        </p>
+        <p>
+            {{personaForm.email.label}}
+            {{personaForm.email(size=30)}}
+        </p>
+        <p>
+            {{personaForm.enviar()}}
+        </p>
+    </form>
+</body>
+</html>

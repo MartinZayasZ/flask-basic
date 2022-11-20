@@ -62,4 +62,24 @@ def agregar():
 
     return render_template('agregar.html', personaForm=personaForm)
 
+@app.route('/editar/<int:id>', methods=['GET', 'POST'])
+def editar(id):
+    persona = Persona.query.get_or_404(id)
+    personaForm = PersonaForm(obj=persona)
+    if request.method == 'POST':
+        if personaForm.validate_on_submit():
+            personaForm.populate_obj(persona)
+            app.logger.debug(f'Persona a editar: {persona}')
+            #actualizamos el nuevo registro
+            db.session.commit()
+            return redirect(url_for('inicio'))
 
+    return render_template('editar.html', personaForm=personaForm)
+
+@app.route('/eliminar/<int:id>')
+def eliminar(id):
+    persona = Persona.query.get_or_404(id)
+    app.logger.debug(f'Persona a eliminar: {persona}')
+    db.session.delete(persona)
+    db.session.commit()
+    return redirect(url_for('inicio'))
