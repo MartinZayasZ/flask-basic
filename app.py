@@ -1,6 +1,7 @@
 from database import db
+from forms import PersonaForm
 from models import Persona
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from flask_migrate import Migrate
 
 app = Flask(__name__)
@@ -49,7 +50,16 @@ def ver_detalle(id):
 @app.route('/agregar', methods=['GET', 'POST'])
 def agregar():
     persona = Persona()
+    personaForm = PersonaForm(obj=persona)
+    if request.method == 'POST':
+        if personaForm.validate_on_submit():
+            personaForm.populate_obj(persona)
+            app.logger.debug(f'Persona a insertar: {persona}')
+            #insetamos el nuevo registro
+            db.session.add(persona)
+            db.session.commit()
+            return redirect(url_for('inicio'))
 
-    return render_template('agregar.html')
+    return render_template('agregar.html', personaForm=personaForm)
 
 
