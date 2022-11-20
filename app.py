@@ -1,13 +1,9 @@
+from database import db
 from models import Persona
 from flask import Flask, render_template
 from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
 
 app = Flask(__name__)
-
 
 # Configuración  flask-wtf
 app.config['SECRET_KEY'] = 'LLAVE_SECRETA'
@@ -22,17 +18,13 @@ FULL_URL_DB = f'postgresql://{USER_DB}:{PASS_DB}@{URL_DB}/{NAME_DB}'
 app.config['SQLALCHEMY_DATABASE_URI'] = FULL_URL_DB
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Inicialización del objeto db de sqlalchemy
-db = SQLAlchemy(app)
+# db = SQLAlchemy(app)
+db.init_app(app)
 
 # configurar flask-migrate
 migrate = Migrate()
 migrate.init_app(app, db)
 
-class PersonaForm(FlaskForm):
-    nombre = StringField('Nombre', validators=[DataRequired()])
-    apellido = StringField('Apellido')
-    email = StringField('Email', validators=[DataRequired()])
-    enviar = SubmitField('Enviar')
 
 @app.route('/')
 @app.route('/index')
